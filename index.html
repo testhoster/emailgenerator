@@ -50,6 +50,12 @@
       border-radius: 6px;
       white-space: pre-wrap;
     }
+      footer {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -60,10 +66,11 @@
     <label for="emailType">Email Type</label>
     <select id="emailType" onchange="handleTypeChange()">
       <option>Application Movement for Interview</option>
-      <option Selected >Enquiry about the role</option>
+      <option selected>Enquiry about the role</option>
       <option>Rejection - Underperformed Interview</option>
       <option>Rejection - Discontinuation</option>
       <option>Termination</option>
+      <option>Offer Letter</option>
     </select>
 
     <label for="name">Candidate/Intern Name</label>
@@ -100,6 +107,10 @@
     <h3>Generated Email:</h3>
     <div class="email-box" id="emailOutput"></div>
   </div>
+  <footer>
+    Made with ❤️ by <strong>Rithvik K</strong><br>
+    <em>Quantum Machine Learning</em>
+  </footer>
 
   <script>
     function handleTypeChange() {
@@ -179,7 +190,6 @@ Best regards,<br>${signature}`;
         const selectedReasons = Array.from(checkboxes)
           .filter(checkbox => checkbox.checked)
           .map(checkbox => `<li>${checkbox.value}</li>`);
-
         const reasonsHTML = selectedReasons.length ? `<ul>${selectedReasons.join('')}</ul>` : '[Reason not specified]';
 
         emailHTML = `Dear <strong>${name}</strong>,<br><br>
@@ -190,10 +200,18 @@ We appreciate the time you have spent with us and wish you the best in your futu
 Best regards,<br>${signature}`;
       }
 
+      else if (emailType === 'Offer Letter') {
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+We are pleased to inform you that following your interview for the <strong>${position}</strong> position, we were highly satisfied with your performance and are happy to offer you a place on the team at <strong>ANANTWAVE</strong>.<br><br>
+Please find your official Offer Letter attached with this email. Kindly review the document carefully and confirm your acceptance by replying to this email at your earliest convenience.<br><br>
+We are excited to have you join us and look forward to the contributions you will bring to the team. Should you have any questions regarding the offer or the onboarding process, feel free to reach out.<br><br>
+Welcome to <strong>ANANTWAVE</strong>!<br><br>
+Best regards,<br>${signature}`;
+      }
+
       output.innerHTML = emailHTML;
     }
   </script>
 
 </body>
 </html>
-

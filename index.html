@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 8px 14px;
+      background: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .email-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Email Generator @AnantWave</h2>
+
+    <label for="emailType">Email Type</label>
+    <select id="emailType" onchange="handleTypeChange()">
+      <option>Application Movement for Interview</option>
+      <option Selected >Enquiry about the role</option>
+      <option>Rejection - Underperformed Interview</option>
+      <option>Rejection - Discontinuation</option>
+      <option>Termination</option>
+    </select>
+
+    <label for="name">Candidate/Intern Name</label>
+    <input type="text" id="name" placeholder="Enter Name">
+
+    <label for="position">Position</label>
+    <input type="text" id="position" placeholder="Enter Position">
+
+    <div id="datetimeGroup" style="display: none;">
+      <label for="datetime">Date & Time</label>
+      <input type="datetime-local" id="datetime">
+      <button onclick="setQuickDate('today')">Today</button>
+      <button onclick="setQuickDate('tomorrow')">Tomorrow</button>
+    </div>
+
+    <div id="terminationReasons" style="display: none;">
+      <label>Termination Reasons (Select any):</label>
+      <label><input type="checkbox" value="Repeated instances of irregular attendance despite prior discussions and reminders."> Irregular attendance</label>
+      <label><input type="checkbox" value="Consistent failure to submit assigned tasks within agreed deadlines, affecting team progress."> Missed deadlines</label>
+      <label><input type="checkbox" value="Instances of unacceptable behavior that do not align with the professional standards expected at ANANTWAVE."> Unacceptable behavior</label>
+      <label><input type="checkbox" value="Insubordination or defiance towards managerial instructions."> Insubordination</label>
+      <label><input type="checkbox" value="Other reason."> Other</label>
+    </div>
+
+    <label for="signature">Select Signature</label>
+    <select id="signature">
+      <option value="Rithvik K<br><strong>Lead, Department of Quantum Machine Learning and AI Research</strong><br>ANANTWAVE">Lead</option>
+      <option value="Arjangi Govinda Krishna<br><strong>HR Manager</strong><br>ANANTWAVE">HR Manager</option>
+      <option value="Duggireddy Harinathreddy<br><strong>CEO</strong><br>ANANTWAVE">CEO</option>
+    </select>
+
+    <button onclick="generateEmail()">Generate Email</button>
+
+    <h3>Generated Email:</h3>
+    <div class="email-box" id="emailOutput"></div>
+  </div>
+
+  <script>
+    function handleTypeChange() {
+      const type = document.getElementById('emailType').value;
+      document.getElementById('datetimeGroup').style.display = type === 'Application Movement for Interview' ? 'block' : 'none';
+      document.getElementById('terminationReasons').style.display = type === 'Termination' ? 'block' : 'none';
+    }
+
+    function setQuickDate(option) {
+      const now = new Date();
+      if (option === 'today') now.setHours(now.getHours() + 1);
+      if (option === 'tomorrow') now.setDate(now.getDate() + 1);
+      document.getElementById('datetime').value = now.toISOString().slice(0,16);
+    }
+
+    function formatDate(datetimeStr) {
+      try {
+        const d = new Date(datetimeStr);
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: '2-digit' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+        const datePart = d.toLocaleDateString(undefined, dateOptions);
+        const timePart = d.toLocaleTimeString(undefined, timeOptions);
+        return `${timePart}, ${datePart}`;
+      } catch {
+        return '[Time and Date]';
+      }
+    }
+
+    function generateEmail() {
+      const name = document.getElementById('name').value || '[Candidate Name]';
+      const position = document.getElementById('position').value || '[Position]';
+      const emailType = document.getElementById('emailType').value;
+      const datetime = document.getElementById('datetime').value;
+      const formattedDate = datetime ? formatDate(datetime) : '[Time and Date]';
+      const signature = document.getElementById('signature').value;
+      const output = document.getElementById('emailOutput');
+
+      let emailHTML = '';
+
+      if (emailType === 'Application Movement for Interview') {
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+We have received your application for the position of <strong>${position}</strong>. After reviewing your profile, we would like to proceed with the next step of the application process.<br><br>
+You are scheduled for an interview at <strong>${formattedDate}</strong>. Kindly confirm your availability at your earliest convenience.<br><br>
+Best regards,<br>${signature}`;
+      }
+
+      else if (emailType === 'Enquiry about the role') {
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+Thank you for sharing your resume with us. We appreciate your interest in opportunities at <strong>ANANTWAVE</strong>.<br><br>
+To proceed further, could you please specify the position or role you are applying for? This will help us direct your application to the appropriate team for review.<br><br>
+For your reference, I’m attaching flyers that outline the currently available internship positions:<br><br>
+Please take a moment to review these and let us know which role aligns with your interests and skill set.<br><br>
+We look forward to hearing from you.<br><br>
+Best regards,<br>${signature}`;
+      }
+
+      else if (emailType === 'Rejection - Underperformed Interview') {
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+Thank you for taking the time to interview with us for the <strong>${position}</strong> position at <strong>ANANTWAVE</strong>. We appreciate the effort you put into the process and the interest you have shown in joining our team.<br><br>
+After careful consideration, we regret to inform you that we will not be moving forward with your application at this time. This decision was based on the alignment of the role’s current requirements with the skill sets we are seeking.<br><br>
+We truly appreciate your interest in <strong>ANANTWAVE</strong>, and we encourage you to apply for future opportunities that may be a better match for your profile.<br><br>
+We wish you all the best in your future endeavors.<br><br>
+Best regards,<br>${signature}`;
+      }
+
+      else if (emailType === 'Rejection - Discontinuation') {
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+We hope this message finds you well.<br><br>
+We understand that you are unable to proceed with the <strong>${position}</strong> position at <strong>ANANTWAVE</strong>, for which an offer had been previously issued.<br><br>
+We acknowledge your situation and extend our best wishes for your future academic and professional endeavors. Should circumstances change or should you wish to explore opportunities with <strong>ANANTWAVE</strong> in the future, please feel free to reach out.<br><br>
+Thank you once again for your interest in our organization.<br><br>
+Best regards,<br>${signature}`;
+      }
+
+      else if (emailType === 'Termination') {
+        const checkboxes = document.querySelectorAll('#terminationReasons input[type=checkbox]');
+        const selectedReasons = Array.from(checkboxes)
+          .filter(checkbox => checkbox.checked)
+          .map(checkbox => `<li>${checkbox.value}</li>`);
+
+        const reasonsHTML = selectedReasons.length ? `<ul>${selectedReasons.join('')}</ul>` : '[Reason not specified]';
+
+        emailHTML = `Dear <strong>${name}</strong>,<br><br>
+We are writing to formally notify you of the termination of your internship with <strong>ANANTWAVE</strong>, effective immediately.<br><br>
+This decision has been made after careful consideration based on the following grounds:<br>${reasonsHTML}<br>
+As an organization, we place high value on professionalism, commitment, and respectful conduct. Unfortunately, the concerns mentioned above have not shown satisfactory improvement, leaving us with no option but to conclude your engagement.<br><br>
+We appreciate the time you have spent with us and wish you the best in your future endeavors.<br><br>
+Best regards,<br>${signature}`;
+      }
+
+      output.innerHTML = emailHTML;
+    }
+  </script>
+
+</body>
+</html>
+
